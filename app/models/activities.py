@@ -17,13 +17,13 @@ class Activity(Base):
     )
 
     parent = relationship(
-        "Activity", back_populates="children", remote_side=[id], uselist=False
+        "Activity",
+        back_populates="children",
+        remote_side="[Activity.id]",
+        uselist=False,
     )
     relationship(
         "Organization",
         secondary="organizations_activities",
         back_populates="activities",
     )
-
-
-# проверить этот класс на корректность!!!
