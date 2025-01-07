@@ -1,3 +1,3 @@
-from app.core import config, security
+from app.core import config
 
-__all__ = ["config", "security"]
+__all__ = ["config"]
