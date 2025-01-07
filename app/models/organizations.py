@@ -21,5 +21,9 @@ class Organization(Base):
     phones = relationship(
         "Phone", back_populates="organization", cascade="all, delete-orphan"
     )
-    building = relationship("Building", secondary="buildings_organizations")
-    activities = relationship("Activity", secondary="organizations_activities")
+    building = relationship(
+        "Building", secondary="buildings_organizations", back_populates="organizations"
+    )
+    activities = relationship(
+        "Activity", secondary="organizations_activities", back_populates="organizations"
+    )
