@@ -18,8 +18,8 @@ class Organization(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     building_id = Column(Integer, ForeignKey("buildings.id"), nullable=False)
-    building = relationship("Building", back_populates="organizations")
     phones = relationship(
         "Phone", back_populates="organization", cascade="all, delete-orphan"
     )
+    building = relationship("Building", secondary="buildings_organizations")
     activities = relationship("Activity", secondary="organizations_activities")
