@@ -18,6 +18,8 @@ buildings_organizations = Table(
 class Building(Base):
     __tablename__ = "buildings"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    address = Column(String, nullable=False)
     location = Column(Geography(geometry_type="POINT", srid=4326), nullable=False)
-    organizations = relationship("Organization", secondary="buildings_organizations")
+    organizations = relationship(
+        "Organization", secondary="buildings_organizations", back_populates="building"
+    )
