@@ -8,9 +8,19 @@ organizations_activities = Table(
     "organizations_activities",
     Base.metadata,
     Column(
-        "organization_id", Integer, ForeignKey("organizations.id"), primary_key=True
+        "organization_id",
+        Integer,
+        ForeignKey("organizations.id"),
+        primary_key=True,
+        index=True,
     ),
-    Column("activity_id", Integer, ForeignKey("activities.id"), primary_key=True),
+    Column(
+        "activity_id",
+        Integer,
+        ForeignKey("activities.id"),
+        primary_key=True,
+        index=True,
+    ),
 )
 
 
