@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from app.api.dependencies import get_db, verify_api_key
-from app.services.organization import OrganizationService
-from app.schemas.organization import Organization
-from app.services.building import BuildingService
+from app.services.organizations import OrganizationService
+from app.schemas.organizations import Organization
+from app.services.buildings import BuildingService
 
 router = APIRouter()
 
