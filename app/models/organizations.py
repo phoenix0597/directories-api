@@ -29,7 +29,9 @@ class Organization(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    building_id = Column(Integer, ForeignKey("buildings.id"), nullable=False)
+    building_id = Column(
+        Integer, ForeignKey("buildings.id"), nullable=False, index=True
+    )
     phones = relationship(
         "Phone", back_populates="organization", cascade="all, delete-orphan"
     )
