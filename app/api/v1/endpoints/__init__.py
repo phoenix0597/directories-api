@@ -1,7 +1,5 @@
-from app.api.v1.endpoints import activities, buildings, organizations
+from app.api.v1.endpoints import organizations
 
 __all__ = [
-    "activities",
-    "buildings",
     "organizations",
 ]
