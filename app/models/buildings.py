@@ -8,7 +8,7 @@ from app.db.base import Base
 buildings_organizations = Table(
     "buildings_organizations",
     Base.metadata,
-    Column("building_id", Integer, ForeignKey("buildings.id")),
+    Column("building_id", Integer, ForeignKey("buildings.id"), primary_key=True),
     Column(
         "organization_id", Integer, ForeignKey("organizations.id"), primary_key=True
     ),
