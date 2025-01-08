@@ -6,13 +6,15 @@ from app.services.organizations import OrganizationService
 from app.schemas.organizations import Organization
 from app.services.buildings import BuildingService
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Organizations"],
+    dependencies=[Depends(verify_api_key)],
+)
 
 
 @router.get(
     "/by-building/{building_id}",
     response_model=List[Organization],
-    dependencies=[Depends(verify_api_key)],
 )
 async def get_organizations_by_building(
     building_id: int, db: AsyncSession = Depends(get_db)
@@ -26,7 +28,6 @@ async def get_organizations_by_building(
 @router.get(
     "/by-activity/{activity_id}",
     response_model=List[Organization],
-    dependencies=[Depends(verify_api_key)],
 )
 async def get_organizations_by_activity(
     activity_id: int, db: AsyncSession = Depends(get_db)
@@ -40,7 +41,6 @@ async def get_organizations_by_activity(
 @router.get(
     "/by-radius",
     response_model=List[Organization],
-    dependencies=[Depends(verify_api_key)],
 )
 async def get_organizations_by_radius(
     latitude: float, longitude: float, radius: float, db: AsyncSession = Depends(get_db)
@@ -60,7 +60,8 @@ async def get_organizations_by_radius(
 
 
 @router.get(
-    "/search", response_model=List[Organization], dependencies=[Depends(verify_api_key)]
+    "/search",
+    response_model=List[Organization],
 )
 async def search_organizations(name: str, db: AsyncSession = Depends(get_db)):
     """Search organizations by name"""
