@@ -28,9 +28,12 @@ class Organization(Base):
     __tablename__ = "organizations"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
     building_id = Column(
-        Integer, ForeignKey("buildings.id"), nullable=False, index=True
+        Integer,
+        ForeignKey("buildings.id", ondelete="RESTRICT"),
+        nullable=False,
+        index=True,
     )
     phones = relationship(
         "Phone", back_populates="organization", cascade="all, delete-orphan"
