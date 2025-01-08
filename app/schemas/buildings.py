@@ -14,4 +14,5 @@ class BuildingCreate(BuildingBase):
 class Building(BuildingBase):
     id: int
 
+
     model_config = ConfigDict(from_attributes=True)

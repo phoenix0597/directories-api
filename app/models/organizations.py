@@ -21,7 +21,7 @@ organizations_activities = Table(
         primary_key=True,
         index=True,
     ),
-)
+
 
 
 class Organization(Base):
