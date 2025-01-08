@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, ARRAY
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -21,7 +21,7 @@ organizations_activities = Table(
         primary_key=True,
         index=True,
     ),
-
+)
 
 
 class Organization(Base):
@@ -35,9 +35,7 @@ class Organization(Base):
         nullable=False,
         index=True,
     )
-    phones = relationship(
-        "Phone", back_populates="organization", cascade="all, delete-orphan"
-    )
+    phones = Column(ARRAY(String(20)), nullable=True)
     building = relationship(
         "Building", secondary="buildings_organizations", back_populates="organizations"
     )

@@ -1,10 +1,13 @@
+import re
 from typing import TYPE_CHECKING, List
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 if TYPE_CHECKING:
     from .buildings import Building
     from .activities import Activity
-    from .phones import Phone
+
+# Pattern for phone number validation
+pattern = re.compile(r"^\+?1?\d{9,15}$")
 
 
 class OrganizationBase(BaseModel):
@@ -15,8 +18,6 @@ class OrganizationBase(BaseModel):
         description="Organization name, e.g. ООО 'Рога и Копыта'",
     )
     building_id: int = Field(..., gt=0)
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class OrganizationCreate(OrganizationBase):
@@ -42,4 +43,14 @@ class Organization(OrganizationBase):
     id: int
     building: "Building"
     activities: List["Activity"] | None = None
-    phones: List["Phone"] | None = None
+    phones: List["str"] | None = None
+
+    @field_validator("phones")
+    def validate_phones(cls, v):
+        if not all(pattern.match(phone) for phone in v):
+            raise ValueError(
+                "Phone number should contain only 9-15 digits and start with or without + sign"
+            )
+        return v
+
+    model_config = ConfigDict(from_attributes=True)
