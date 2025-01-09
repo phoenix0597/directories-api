@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, List
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 if TYPE_CHECKING:
-    from .buildings import Building
-    from .activities import Activity
+    from app.schemas.buildings import Building
+    from app.schemas.activities import Activity
 
 # Pattern for phone number validation
 pattern = re.compile(r"^\+?1?\d{9,15}$")
@@ -53,4 +53,11 @@ class Organization(OrganizationBase):
             )
         return v
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
+
+
+# Allow forward references
+from app.schemas.buildings import Building
+from app.schemas.activities import Activity
+
+Organization.model_rebuild()

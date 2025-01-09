@@ -14,5 +14,7 @@ class BuildingCreate(BuildingBase):
 class Building(BuildingBase):
     id: int
 
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
-    model_config = ConfigDict(from_attributes=True)
+
+Building.model_rebuild()
