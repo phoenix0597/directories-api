@@ -8,6 +8,7 @@ from app.services.buildings import BuildingService
 
 router = APIRouter(
     tags=["Organizations"],
+    prefix="/api/v1/organizations",
     dependencies=[Depends(verify_api_key)],
 )
 
