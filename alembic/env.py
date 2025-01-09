@@ -2,8 +2,13 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+from geoalchemy2 import alembic_helpers
 
 from alembic import context
+
+from app.core.config import settings
+from app.db.base import Base
+from app.models import buildings, organizations, activities  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -18,12 +23,26 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+config.set_main_option("sqlalchemy.url", f"{settings.DATABASE_URL}?async_fallback=True")
+
+
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table":
+        # Загружаем имена таблиц из файла
+        with open(settings.GEOALCHEMY_TABLES_FILE, "r") as file:
+            ignored_tables = [line.strip().strip('"') for line in file.readlines()]
+
+        # Игнорируем таблицы, если они есть в списке geoalchemy_tables
+        if name in ignored_tables:
+            return False
+    return True
 
 
 def run_migrations_offline() -> None:
@@ -44,6 +63,9 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        # S.M. 2025-01-09 - to avoid errors with GeoAlchemy2
+        include_object=include_object,  # exclude geoalchemy_tables from migration
+        render_item=alembic_helpers.render_item,  # add geoalchemy imports to migration file
     )
 
     with context.begin_transaction():
@@ -65,7 +87,11 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            # S.M. 2025-01-09 - to avoid errors with GeoAlchemy2
+            include_object=include_object,  # exclude geoalchemy_tables from migration
+            render_item=alembic_helpers.render_item,  # add geoalchemy imports to migration file
         )
 
         with context.begin_transaction():
