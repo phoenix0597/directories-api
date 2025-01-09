@@ -6,9 +6,14 @@ WORK_DIR: str = dirname(dirname(dirname(abspath(__file__))))
 
 
 class Settings(BaseSettings):
-    API_KEY: str = "some_super_secret_api_key"
+    API_KEY: str
     DATABASE_URL: str
     MAX_ACTIVITY_DEPTH: int = 3
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+
+    GEOALCHEMY_TABLES_FILE: str = join(WORK_DIR, "alembic", "geoalchemy_tables.txt")
 
     class Config:
         env_file = join(WORK_DIR, ".env-dev")
