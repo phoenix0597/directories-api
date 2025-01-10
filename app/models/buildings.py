@@ -1,18 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, Integer, String
 from geoalchemy2 import Geography
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
-
-
-buildings_organizations = Table(
-    "buildings_organizations",
-    Base.metadata,
-    Column("building_id", Integer, ForeignKey("buildings.id"), primary_key=True),
-    Column(
-        "organization_id", Integer, ForeignKey("organizations.id"), primary_key=True
-    ),
-)
 
 
 class Building(Base):
@@ -24,5 +14,7 @@ class Building(Base):
         nullable=False,
     )
     organizations = relationship(
-        "Organization", secondary="buildings_organizations", back_populates="building"
+        "Organization",
+        back_populates="organizations",
+        foreign_keys="Organization.building_id",
     )
