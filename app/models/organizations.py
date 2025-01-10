@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, ARRAY
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapped_column
 
 from app.db.base import Base
 
@@ -29,16 +29,13 @@ class Organization(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
-    building_id = Column(
+    building_id = mapped_column(
         Integer,
         ForeignKey("buildings.id", ondelete="RESTRICT"),
         nullable=False,
         index=True,
     )
     phones = Column(ARRAY(String(20)), nullable=True)
-    building = relationship(
-        "Building", secondary="buildings_organizations", back_populates="organizations"
-    )
     activities = relationship(
         "Activity", secondary="organizations_activities", back_populates="organizations"
     )
