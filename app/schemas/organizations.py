@@ -6,8 +6,7 @@ if TYPE_CHECKING:
     from app.schemas.buildings import Building
     from app.schemas.activities import Activity
 
-# Pattern for phone number validation
-pattern = re.compile(r"^\+?1?\d{9,15}$")
+pattern = re.compile(r"^(?=.{1,16}$)\+?(\d{1,3}-)+\d{1,3}$")
 
 
 class OrganizationBase(BaseModel):
@@ -47,17 +46,19 @@ class Organization(OrganizationBase):
 
     @field_validator("phones")
     def validate_phones(cls, v):
-        if not all(pattern.match(phone) for phone in v):
+        if not all(pattern.match(phone.strip("'")) for phone in v):
             raise ValueError(
-                "Phone number should contain only 9-15 digits and start with or without + sign"
+                "Phone number should contain only 9-16 digits and start with or without + sign"
             )
         return v
 
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
+    model_config = ConfigDict(
+        from_attributes=True, arbitrary_types_allowed=True, populate_by_name=True
+    )
 
 
 # Allow forward references
-from app.schemas.buildings import Building
-from app.schemas.activities import Activity
+from app.schemas.buildings import Building  # noqa
+from app.schemas.activities import Activity  # noqa
 
 Organization.model_rebuild()
