@@ -26,17 +26,17 @@ async def get_organizations_by_building(
     return organizations
 
 
-@router.get(
-    "/by-activity/{activity_id}",
-    response_model=List[OrganizationResponse],
-)
-async def get_organizations_by_activity(
-    activity_id: int, db: AsyncSession = Depends(get_db)
-):
-    """Search organizations by activity ID"""
-    service = OrganizationService(db)
-    organizations = await service.get_by_activity_tree(activity_id)
-    return organizations
+# @router.get(
+#     "/by-activity/{activity_id}",
+#     response_model=List[OrganizationResponse],
+# )
+# async def get_organizations_by_activity(
+#     activity_id: int, db: AsyncSession = Depends(get_db)
+# ):
+#     """Search organizations by activity ID"""
+#     service = OrganizationService(db)
+#     organizations = await service.get_by_activity_tree(activity_id)
+#     return organizations
 
 
 @router.get(
