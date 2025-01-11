@@ -1,3 +1,4 @@
+from __future__ import annotations  # Это нужно для рекурсивных ссылок
 from typing import Optional, TYPE_CHECKING
 
 from pydantic import BaseModel, field_validator, Field, ConfigDict
@@ -6,12 +7,12 @@ from pydantic import ValidationInfo
 from app.core.config import settings
 
 if TYPE_CHECKING:
-    from app.models.organizations import Organization
+    from app.models.organizations import Organization  # noqa
 
 
 class ActivityBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
-    parent: Optional["Activity"] = None
+    # parent: Optional["ActivityResponse"] = None
 
 
 class ActivityCreate(ActivityBase):
@@ -28,14 +29,15 @@ class ActivityCreate(ActivityBase):
         return parent_id
 
 
-class Activity(ActivityBase):
+class ActivityResponse(ActivityBase):
     id: int
     level: int = Field(default=1, ge=1, le=settings.MAX_ACTIVITY_DEPTH)
-    children: Optional[list["Activity"]] = None
-    # parent: Optional["Activity"] = None
-    organizations: list["Organization"] | None = None
-
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
+    children: Optional[list["ActivityResponse"]] = None
+    parent: Optional["ActivityResponse"] = None
+    # organizations: list["Organization"] | None = None
+    model_config = ConfigDict(
+        from_attributes=True, arbitrary_types_allowed=True, populate_by_name=True
+    )
 
 
 # Activity.model_rebuild()

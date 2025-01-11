@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 if TYPE_CHECKING:
     from app.schemas.buildings import Building
-    from app.schemas.activities import Activity
+    from app.schemas.activities import ActivityResponse
 
 pattern = re.compile(r"^(?=.{1,16}$)\+?(\d{1,3}-)+\d{1,3}$")
 
@@ -34,14 +34,16 @@ class OrganizationUpdate(OrganizationBase):
     )
     building_id: int | None = Field(None, gt=0)
     activity_ids: List[int] | None = Field(
-        None, min_items=1, description="List of activity IDs"
+        None,
+        min_items=1,
+        description="List of activity IDs",
     )
 
 
-class Organization(OrganizationBase):
+class OrganizationResponse(OrganizationBase):
     id: int
     building: "Building"
-    activities: List["Activity"] | None = None
+    activities: List["ActivityResponse"] | None = None
     phones: List["str"] | None = None
 
     @field_validator("phones")
@@ -53,12 +55,14 @@ class Organization(OrganizationBase):
         return v
 
     model_config = ConfigDict(
-        from_attributes=True, arbitrary_types_allowed=True, populate_by_name=True
+        from_attributes=True,
+        arbitrary_types_allowed=True,
+        populate_by_name=True,
     )
 
 
 # Allow forward references
 from app.schemas.buildings import Building  # noqa
-from app.schemas.activities import Activity  # noqa
+from app.schemas.activities import ActivityResponse  # noqa
 
-Organization.model_rebuild()
+OrganizationResponse.model_rebuild()

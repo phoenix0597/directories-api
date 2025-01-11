@@ -35,7 +35,25 @@ class Organization(Base):
         nullable=False,
         index=True,
     )
+
     phones = Column(ARRAY(String(20)), nullable=True)
     activities = relationship(
-        "Activity", secondary="organizations_activities", back_populates="organizations"
+        "Activity",
+        secondary="organizations_activities",
+        back_populates="organizations",
     )
+
+    building = relationship(
+        "Building",
+        back_populates="organizations",
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "building_id": self.building_id,
+            "phones": self.phones,
+            "building": self.building.to_dict() if self.building else None,
+            "activities": [activity.to_dict() for activity in self.activities],
+        }

@@ -15,6 +15,13 @@ class Building(Base):
     )
     organizations = relationship(
         "Organization",
-        back_populates="organizations",
-        foreign_keys="Organization.building_id",
+        back_populates="building",
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "address": self.address,
+            "latitude": getattr(self, "latitude", None),
+            "longitude": getattr(self, "longitude", None),
+        }
