@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from app.api.dependencies import get_db, verify_api_key
@@ -42,23 +43,44 @@ async def get_organizations_by_activity(
 
 @router.get(
     "/by-radius",
-    response_model=List[OrganizationResponse],
+    # response_model=List[OrganizationResponse],
+    response_model=List[dict],
 )
 async def get_organizations_by_radius(
     latitude: float, longitude: float, radius: float, db: AsyncSession = Depends(get_db)
 ):
-    """Search organizations in the area around the given coordinates and radius"""
+    """Search organizations in the area around the given coordinates and radius (in meters)"""
     building_service = BuildingService(db)
     buildings = await building_service.get_buildings_in_radius(
         latitude, longitude, radius
     )
 
+    # for debug
+    print(f"\nFound buildings: {[b.id for b in buildings]}\n")
+
     org_service = OrganizationService(db)
     organizations = []
     for building in buildings:
+        # for debug
+        print(f"\nProcessing building: {building.id}\n")
+
+        # orgs = await org_service.get_by_building(building["id"])
         orgs = await org_service.get_by_building(building.id)
+        # for debug
+        print(
+            f"\nFound organizations for building {building.id}: {[org.id for org in orgs]}\n"
+        )
+
         organizations.extend(orgs)
-    return organizations
+
+    print(f"Total organizations found: {len(organizations)}")
+
+    # Преобразуем организации в словари
+    org_dicts = [org.to_dict() for org in organizations]
+
+    # return organizations
+    # Используем JSONResponse для возврата данных
+    return JSONResponse(content=jsonable_encoder(org_dicts))
 
 
 @router.get(

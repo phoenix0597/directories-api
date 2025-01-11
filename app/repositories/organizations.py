@@ -24,7 +24,7 @@ class OrganizationRepository:
             func.ST_Y(func.ST_AsText(Building.location)).label("latitude"),
         ).join(Building)
 
-    async def get_by_building(self, building_id: int) -> List[OrganizationResponse]:
+    async def get_by_building(self, building_id: int) -> List[Organization]:
         query = (
             self._base_query()
             .where(Organization.building_id == building_id)

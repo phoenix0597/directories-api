@@ -1,3 +1,4 @@
+from app.models.buildings import Building
 from app.repositories.buildings import BuildingRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
@@ -9,7 +10,7 @@ class BuildingService:
 
     async def get_buildings_in_radius(
         self, latitude: float, longitude: float, radius: float
-    ) -> List[dict]:
+    ) -> List[Building]:
         buildings = await self.repository.get_buildings_in_radius(
             latitude, longitude, radius
         )
