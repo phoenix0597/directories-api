@@ -44,3 +44,11 @@ class Activity(Base):
             level += 1
             current = current.parent
         return level
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "parent_id": self.parent_id,
+            "level": self.level,
+        }
