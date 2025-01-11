@@ -11,7 +11,7 @@ class BuildingCreate(BuildingBase):
     pass
 
 
-class Building(BuildingBase):
+class BuildingResponse(BuildingBase):
     id: int
 
     model_config = ConfigDict(
@@ -19,4 +19,4 @@ class Building(BuildingBase):
     )
 
 
-Building.model_rebuild()
+BuildingResponse.model_rebuild()

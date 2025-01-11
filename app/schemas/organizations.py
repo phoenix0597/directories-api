@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 if TYPE_CHECKING:
-    from app.schemas.buildings import Building
+    from app.schemas.buildings import BuildingResponse
     from app.schemas.activities import ActivityResponse
 
 pattern = re.compile(r"^(?=.{1,16}$)\+?(\d{1,3}-)+\d{1,3}$")
@@ -42,7 +42,7 @@ class OrganizationUpdate(OrganizationBase):
 
 class OrganizationResponse(OrganizationBase):
     id: int
-    building: "Building"
+    building: "BuildingResponse"
     activities: List["ActivityResponse"] | None = None
     phones: List["str"] | None = None
 
@@ -62,7 +62,7 @@ class OrganizationResponse(OrganizationBase):
 
 
 # Allow forward references
-from app.schemas.buildings import Building  # noqa
+from app.schemas.buildings import BuildingResponse  # noqa
 from app.schemas.activities import ActivityResponse  # noqa
 
 OrganizationResponse.model_rebuild()
