@@ -2,8 +2,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from geoalchemy2.functions import (
     ST_DWithin,
-    ST_MakePoint,
-    ST_Transform,
     ST_GeogFromText,
 )
 from geoalchemy2.types import Geography
@@ -20,8 +18,8 @@ class BuildingRepository:
         latitude: float,
         longitude: float,
         radius: float,
-        # ) -> List[Building]:
-    ) -> List[dict]:
+    ) -> List[Building]:
+        # ) -> List[dict]:
         point = f"SRID=4326;POINT({latitude} {longitude})"
         query = (
             select(
@@ -57,4 +55,9 @@ class BuildingRepository:
     async def get_by_id(self, building_id: int) -> Building:
         query = select(Building).where(Building.id == building_id)
         result = await self.session.execute(query)
-        return result.scalar_one_or_none()
+
+        # for debug
+        print(f"\n\nSQL query: \n\n{query}\n\n")
+        print(f"\n\nBuilding: {result.scalar_one_or_none()}\n\n")
+
+        return result.scalar_one_or_none().to_dict()

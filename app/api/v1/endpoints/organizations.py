@@ -1,6 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from app.api.dependencies import get_db, verify_api_key
@@ -43,8 +41,7 @@ async def get_organizations_by_activity(
 
 @router.get(
     "/by-radius",
-    # response_model=List[OrganizationResponse],
-    response_model=List[dict],
+    response_model=List[OrganizationResponse],
 )
 async def get_organizations_by_radius(
     latitude: float, longitude: float, radius: float, db: AsyncSession = Depends(get_db)
@@ -64,23 +61,13 @@ async def get_organizations_by_radius(
         # for debug
         print(f"\nProcessing building: {building.id}\n")
 
-        # orgs = await org_service.get_by_building(building["id"])
         orgs = await org_service.get_by_building(building.id)
-        # for debug
-        print(
-            f"\nFound organizations for building {building.id}: {[org.id for org in orgs]}\n"
-        )
 
         organizations.extend(orgs)
 
     print(f"Total organizations found: {len(organizations)}")
 
-    # Преобразуем организации в словари
-    org_dicts = [org.to_dict() for org in organizations]
-
-    # return organizations
-    # Используем JSONResponse для возврата данных
-    return JSONResponse(content=jsonable_encoder(org_dicts))
+    return organizations
 
 
 @router.get(
@@ -97,5 +84,4 @@ async def search_organizations(name: str, db: AsyncSession = Depends(get_db)):
         if org.building is None:
             raise HTTPException(status_code=404, detail="Building not found")
 
-    return jsonable_encoder([org.to_dict() for org in organizations])
-    # return organizations
+    return [org.to_dict() for org in organizations]

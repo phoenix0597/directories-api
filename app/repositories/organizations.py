@@ -5,11 +5,9 @@ from sqlalchemy.orm import joinedload, selectinload
 from app.models.activities import Activity
 from app.models.organizations import Organization
 from typing import List
-from geoalchemy2.functions import ST_X, ST_Y, ST_AsText
 from pprint import pprint
 
 from app.models.buildings import Building
-from app.schemas.activities import ActivityResponse
 from app.schemas.organizations import OrganizationResponse
 
 
@@ -24,18 +22,18 @@ class OrganizationRepository:
             func.ST_Y(func.ST_AsText(Building.location)).label("latitude"),
         ).join(Building)
 
-    async def get_by_building(self, building_id: int) -> List[Organization]:
+    async def get_by_building(self, building_id: int) -> List[OrganizationResponse]:
         query = (
             self._base_query()
             .where(Organization.building_id == building_id)
             .options(
-                joinedload(Organization.building),
-                selectinload(Organization.activities),
+                selectinload(Organization.building),
+                selectinload(Organization.activities).selectinload(Activity.parent),
             )
         )
         result = await self.session.execute(query)
-        # return result.scalars().all()
-        return [self._process_result(row) for row in result]
+
+        return [self._process_result(row).to_dict() for row in result]
 
     async def get_by_activity(self, activity_id: int) -> List[OrganizationResponse]:
         query = (
@@ -62,13 +60,9 @@ class OrganizationRepository:
 
         result = await self.session.execute(query)
         organizations = [self._process_result(row) for row in result]
-        print("\n\n\n\n")
+        print("\n\n")
         [pprint(org.to_dict()) for org in organizations]
-        print("\n\n\n\n")
-
-        # # explicit load activities
-        # for org in organizations:
-        #     await self.session.refresh(org, ["activities"])
+        print("\n\n")
 
         return organizations
 
@@ -79,7 +73,7 @@ class OrganizationRepository:
             organization.building.latitude = latitude
 
         print(
-            f"\n\n\n\nOrganization ID: {organization.id}, Activities: {organization.activities}"
+            f"\n\nOrganization ID: {organization.id}, Activities: {organization.activities}\n\n"
         )
 
         return organization
