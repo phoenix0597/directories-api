@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, ARRAY
 from sqlalchemy.orm import relationship, mapped_column
 
+from app.schemas.activities import activity_to_dict
 from app.db.base import Base
 
 
@@ -48,12 +49,22 @@ class Organization(Base):
         back_populates="organizations",
     )
 
+    # def to_dict(self):
+    #     return {
+    #         "id": self.id,
+    #         "name": self.name,
+    #         "building_id": self.building_id,
+    #         "phones": self.phones,
+    #         "building": self.building.to_dict() if self.building else None,
+    #         "activities": [activity.to_dict() for activity in self.activities],
+    #     }
+
     def to_dict(self):
         return {
             "id": self.id,
             "name": self.name,
             "building_id": self.building_id,
-            "phones": self.phones,
             "building": self.building.to_dict() if self.building else None,
-            "activities": [activity.to_dict() for activity in self.activities],
+            "activities": [activity_to_dict(activity) for activity in self.activities],
+            "phones": self.phones,
         }

@@ -1,13 +1,34 @@
 from __future__ import annotations  # Это нужно для рекурсивных ссылок
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING
 
 from pydantic import BaseModel, field_validator, Field, ConfigDict
 from pydantic import ValidationInfo
 
 from app.core.config import settings
 
+
 if TYPE_CHECKING:
     from app.models.organizations import Organization  # noqa
+    from app.models.activities import Activity  # noqa
+
+
+from typing import List, Optional
+from app.models.activities import Activity
+
+
+def activity_to_dict(activity: Activity) -> dict:
+    return {
+        "id": activity.id,
+        "name": activity.name,
+        "level": activity.level,
+        # "parent": activity_to_dict(activity.parent) if activity.parent else None,
+        "parent_id": activity.parent_id,
+        # "children": (
+        #     [activity_to_dict(child) for child in activity.children]
+        #     if activity.children
+        #     else []
+        # ),
+    }
 
 
 class ActivityBase(BaseModel):
