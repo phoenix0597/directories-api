@@ -22,8 +22,8 @@ VALUES (7, 'Запчасти', 6, 3),
 
 -- Заполнение Зданий
 INSERT INTO buildings (address, location)
-VALUES ('Москва, Блюхера 23/1', ST_GeographyFromText('SRID=4326;POINT(37.792803 55.953850)')),
-       ('Москва, Зеленоград, Ленина 1', ST_GeographyFromText('SRID=4326;POINT(37.173329 55.978468)'));
+VALUES ('Мытищи, Блюхера 23/1', ST_GeographyFromText('SRID=4326;POINT(55.953850 37.792803)')),
+       ('Москва, Зеленоград, Ленина 1', ST_GeographyFromText('SRID=4326;POINT(55.978468 37.173329)'));
 
 
 -- Заполнение Организаций
