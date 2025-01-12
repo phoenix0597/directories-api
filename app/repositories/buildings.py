@@ -20,7 +20,8 @@ class BuildingRepository:
         radius: float,
     ) -> List[Building]:
         # ) -> List[dict]:
-        point = f"SRID=4326;POINT({latitude} {longitude})"
+        # point = f"SRID=4326;POINT({latitude} {longitude})"
+        point = f"SRID=4326;POINT({longitude} {latitude})"
         query = (
             select(
                 Building,
