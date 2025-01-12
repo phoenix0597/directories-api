@@ -23,3 +23,5 @@ docker compose exec web sh -c "alembic upgrade head"
 SQL-запрос с тестовыми данными находится в файле `app/db/demo_data/fill_demo_db.sql`.
 
 ### 5. Проверить работу API: открыть в браузере `http://localhost:8000/docs`
+
+Для проверки работы API вам необходимо ввести в поле `API Key` строку, указанную в файле `.env`
