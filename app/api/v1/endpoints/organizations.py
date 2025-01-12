@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from app.api.dependencies import get_db, verify_api_key
@@ -44,12 +44,30 @@ async def get_organizations_by_building(
     response_model=List[OrganizationResponse],
 )
 async def get_organizations_by_radius(
-    latitude: float, longitude: float, radius: float, db: AsyncSession = Depends(get_db)
+    longitude: float = Query(
+        ...,
+        ge=-180,
+        le=180,
+        description="Долгота в формате SRID=4326, например: 55.753215",
+    ),
+    latitude: float = Query(
+        ...,
+        ge=-90,
+        le=90,
+        description="Широта (latitude) в формате SRID=4326, например: 37.792800",
+    ),
+    radius: float = Query(..., ge=0, le=100000, description="Радиус поиска в метрах"),
+    db: AsyncSession = Depends(
+        get_db,
+    ),
 ):
     """Search organizations in the area around the given coordinates and radius (in meters)"""
     building_service = BuildingService(db)
     buildings = await building_service.get_buildings_in_radius(
-        latitude, longitude, radius
+        # latitude, longitude, radius
+        longitude,
+        latitude,
+        radius,
     )
 
     # for debug
